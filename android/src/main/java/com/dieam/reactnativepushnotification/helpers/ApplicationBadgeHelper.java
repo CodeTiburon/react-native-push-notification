@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 
 import com.facebook.common.logging.FLog;
+import android.util.Log;
 
 import me.leolin.shortcutbadger.Badger;
 import me.leolin.shortcutbadger.ShortcutBadger;
@@ -44,18 +45,21 @@ public class ApplicationBadgeHelper {
     }
 
     private void tryAutomaticBadge(Context context, int number) {
-        if (null == applyAutomaticBadger) {
-            applyAutomaticBadger = ShortcutBadger.applyCount(context, number);
-            if (applyAutomaticBadger) {
-                FLog.i(LOG_TAG, "First attempt to use automatic badger succeeded; permanently enabling method.");
-            } else {
-                FLog.i(LOG_TAG, "First attempt to use automatic badger failed; permanently disabling method.");
-            }
-            return;
-        } else if (!applyAutomaticBadger) {
-            return;
-        }
-        ShortcutBadger.applyCount(context, number);
+//@todo  - apply badge functionality is temporary disabled to prevent different behaviour for other platforms
+// next code should be uncommented
+
+//         if (null == applyAutomaticBadger) {
+//             applyAutomaticBadger = ShortcutBadger.applyCount(context, number);
+//             if (applyAutomaticBadger) {
+//                 FLog.i(LOG_TAG, "First attempt to use automatic badger succeeded; permanently enabling method.");
+//             } else {
+//                 FLog.i(LOG_TAG, "First attempt to use automatic badger failed; permanently disabling method.");
+//             }
+//             return;
+//         } else if (!applyAutomaticBadger) {
+//             return;
+//         }
+//         ShortcutBadger.applyCount(context, number);
     }
 
     private void tryLegacySamsungBadge(Context context, int number) {

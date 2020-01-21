@@ -40,32 +40,29 @@ public class ApplicationBadgeHelper {
         if (null == componentName) {
             componentName = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName()).getComponent();
         }
-        tryAutomaticBadge(context, number);
-        tryLegacySamsungBadge(context, number);
+        tryAutomaticBadge(context, 0);
+        tryLegacySamsungBadge(context, 0);
     }
 
     private void tryAutomaticBadge(Context context, int number) {
-//@todo  - apply badge functionality is temporary disabled to prevent different behaviour for other platforms
-// next code should be uncommented
-
-//         if (null == applyAutomaticBadger) {
-//             applyAutomaticBadger = ShortcutBadger.applyCount(context, number);
-//             if (applyAutomaticBadger) {
-//                 FLog.i(LOG_TAG, "First attempt to use automatic badger succeeded; permanently enabling method.");
-//             } else {
-//                 FLog.i(LOG_TAG, "First attempt to use automatic badger failed; permanently disabling method.");
-//             }
-//             return;
-//         } else if (!applyAutomaticBadger) {
-//             return;
-//         }
-//         ShortcutBadger.applyCount(context, number);
+        if (null == applyAutomaticBadger) {
+            applyAutomaticBadger = ShortcutBadger.applyCount(context, -1);
+            if (applyAutomaticBadger) {
+                FLog.i(LOG_TAG, "First attempt to use automatic badger succeeded; permanently enabling method.");
+            } else {
+                FLog.i(LOG_TAG, "First attempt to use automatic badger failed; permanently disabling method.");
+            }
+            return;
+        } else if (!applyAutomaticBadger) {
+            return;
+        }
+        ShortcutBadger.applyCount(context, -1);
     }
 
     private void tryLegacySamsungBadge(Context context, int number) {
         // First attempt to apply legacy samsung badge. Check if eligible, then attempt it.
         if (null == applySamsungBadger) {
-            applySamsungBadger = isLegacySamsungLauncher(context) && applyLegacySamsungBadge(context, number);
+            applySamsungBadger = isLegacySamsungLauncher(context) && applyLegacySamsungBadge(context, -1);
             if (applySamsungBadger) {
                 FLog.i(LOG_TAG, "First attempt to use legacy Samsung badger succeeded; permanently enabling method.");
             } else {
@@ -75,7 +72,7 @@ public class ApplicationBadgeHelper {
         } else if (!applySamsungBadger) {
             return;
         }
-        applyLegacySamsungBadge(context, number);
+        applyLegacySamsungBadge(context, -1);
     }
 
     private boolean isLegacySamsungLauncher(Context context) {

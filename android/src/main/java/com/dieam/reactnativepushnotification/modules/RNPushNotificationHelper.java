@@ -284,9 +284,7 @@ public class RNPushNotificationHelper {
             if (badgeString != null) {
                 int badge = Integer.parseInt(badgeString);
                 Log.e(LOG_TAG, String.format("badge %d", badge));
-                //@todo  - apply badge functionality is temporary disabled to prevent different behaviour for other platforms
-                // next line should be uncommented
-                // ApplicationBadgeHelper.INSTANCE.setApplicationIconBadgeNumber(context, badge);
+                ApplicationBadgeHelper.INSTANCE.setApplicationIconBadgeNumber(context, -1);
             }
 
             if (notificationMessage == null || notificationMessage.length() == 0) return;
@@ -315,7 +313,7 @@ public class RNPushNotificationHelper {
 
             String numberString = bundle.getString("number");
             if (numberString != null) {
-                notification.setNumber(Integer.parseInt(numberString));
+                notification.setNumber(0);
             }
 
             int smallIconResId;
@@ -469,11 +467,11 @@ public class RNPushNotificationHelper {
                 commit(editor);
             }
 
+            notification.setNumber(0);
             Notification info = notification.build();
             info.defaults |= Notification.DEFAULT_LIGHTS;
-            //@todo  - apply badge functionality is temporary disabled to prevent different behaviour for other platforms
-            // in next line 0 should be changed to actual value
-            ShortcutBadger.applyNotification(context, info, 0);
+
+            ShortcutBadger.applyNotification(context, info, -1);
             if (bundle.containsKey("tag")) {
                 String tag = bundle.getString("tag");
                 notificationManager.notify(tag, notificationID, info);
@@ -682,6 +680,7 @@ public class RNPushNotificationHelper {
         channel.setDescription(this.config.getChannelDescription());
         channel.enableLights(true);
         channel.enableVibration(true);
+        channel.setShowBadge(false);
 
         manager.createNotificationChannel(channel);
         channelCreated = true;

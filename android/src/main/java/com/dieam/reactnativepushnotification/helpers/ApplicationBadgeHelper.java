@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 
 import com.facebook.common.logging.FLog;
+import android.util.Log;
 
 import me.leolin.shortcutbadger.Badger;
 import me.leolin.shortcutbadger.ShortcutBadger;
@@ -39,13 +40,13 @@ public class ApplicationBadgeHelper {
         if (null == componentName) {
             componentName = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName()).getComponent();
         }
-        tryAutomaticBadge(context, number);
-        tryLegacySamsungBadge(context, number);
+        tryAutomaticBadge(context, 0);
+        tryLegacySamsungBadge(context, 0);
     }
 
     private void tryAutomaticBadge(Context context, int number) {
         if (null == applyAutomaticBadger) {
-            applyAutomaticBadger = ShortcutBadger.applyCount(context, number);
+            applyAutomaticBadger = ShortcutBadger.applyCount(context, -1);
             if (applyAutomaticBadger) {
                 FLog.i(LOG_TAG, "First attempt to use automatic badger succeeded; permanently enabling method.");
             } else {
@@ -55,13 +56,13 @@ public class ApplicationBadgeHelper {
         } else if (!applyAutomaticBadger) {
             return;
         }
-        ShortcutBadger.applyCount(context, number);
+        ShortcutBadger.applyCount(context, -1);
     }
 
     private void tryLegacySamsungBadge(Context context, int number) {
         // First attempt to apply legacy samsung badge. Check if eligible, then attempt it.
         if (null == applySamsungBadger) {
-            applySamsungBadger = isLegacySamsungLauncher(context) && applyLegacySamsungBadge(context, number);
+            applySamsungBadger = isLegacySamsungLauncher(context) && applyLegacySamsungBadge(context, -1);
             if (applySamsungBadger) {
                 FLog.i(LOG_TAG, "First attempt to use legacy Samsung badger succeeded; permanently enabling method.");
             } else {
@@ -71,7 +72,7 @@ public class ApplicationBadgeHelper {
         } else if (!applySamsungBadger) {
             return;
         }
-        applyLegacySamsungBadge(context, number);
+        applyLegacySamsungBadge(context, -1);
     }
 
     private boolean isLegacySamsungLauncher(Context context) {

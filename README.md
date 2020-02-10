@@ -461,3 +461,8 @@ Same parameters as `PushNotification.localNotification()`
 `PushNotification.getApplicationIconBadgeNumber(callback: Function)` Get badge number
 
 `PushNotification.abandonPermissions()` Abandon permissions
+
+# Release Notes:
+1) React Native version 0.58
+2) In the current solution of the Android package, there is the different behavior for launch icon badge on different platforms (Samsung, Xiaomi etc)
+   Launch badge was temporary disabled to prevent misunderstanding. 

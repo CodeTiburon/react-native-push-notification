@@ -46,6 +46,10 @@ import com.dieam.reactnativepushnotification.helpers.ApplicationBadgeHelper;
 import static com.dieam.reactnativepushnotification.modules.RNPushNotification.LOG_TAG;
 import static com.dieam.reactnativepushnotification.modules.RNPushNotificationAttributes.fromJson;
 
+import me.leolin.shortcutbadger.Badger;
+import me.leolin.shortcutbadger.ShortcutBadger;
+import me.leolin.shortcutbadger.impl.SamsungHomeBadger;
+
 public class RNPushNotificationHelper {
     public static final String PREFERENCES_KEY = "rn_push_notification";
     private static final long DEFAULT_VIBRATION = 300L;
@@ -280,12 +284,11 @@ public class RNPushNotificationHelper {
             if (badgeString != null) {
                 int badge = Integer.parseInt(badgeString);
                 Log.e(LOG_TAG, String.format("badge %d", badge));
-                
-                ApplicationBadgeHelper.INSTANCE.setApplicationIconBadgeNumber(context, badge);
+                ApplicationBadgeHelper.INSTANCE.setApplicationIconBadgeNumber(context, -1);
             }
 
             if (notificationMessage == null || notificationMessage.length() == 0) return;
-            
+
             NotificationCompat.Builder notification = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
                     .setContentTitle(title)
                     .setTicker(bundle.getString("ticker"))
@@ -310,7 +313,7 @@ public class RNPushNotificationHelper {
 
             String numberString = bundle.getString("number");
             if (numberString != null) {
-                notification.setNumber(Integer.parseInt(numberString));
+                notification.setNumber(0);
             }
 
             int smallIconResId;
@@ -464,9 +467,11 @@ public class RNPushNotificationHelper {
                 commit(editor);
             }
 
+            notification.setNumber(0);
             Notification info = notification.build();
             info.defaults |= Notification.DEFAULT_LIGHTS;
 
+            ShortcutBadger.applyNotification(context, info, -1);
             if (bundle.containsKey("tag")) {
                 String tag = bundle.getString("tag");
                 notificationManager.notify(tag, notificationID, info);
@@ -675,6 +680,7 @@ public class RNPushNotificationHelper {
         channel.setDescription(this.config.getChannelDescription());
         channel.enableLights(true);
         channel.enableVibration(true);
+        channel.setShowBadge(false);
 
         manager.createNotificationChannel(channel);
         channelCreated = true;
